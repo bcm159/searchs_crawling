@@ -12,9 +12,9 @@ def get_header(method, uri, api_key, secret_key, customer_id):
     return {'Content-Type': 'application/json; charset=UTF-8', 'X-Timestamp': timestamp, 'X-API-KEY': API_KEY, 'X-Customer': str(CUSTOMER_ID), 'X-Signature': signature}
 
 BASE_URL = 'https://api.searchad.naver.com'
-API_KEY = ''
-SECRET_KEY = ''
-CUSTOMER_ID = ''
+API_KEY = '010000000074d47e4dd1f1f495f7e53907a34ed0499c2af68b5db7410149be263c9c35b772'
+SECRET_KEY = 'AQAAAAB01H5N0fH0lfflOQejTtBJd7g/5nvMGfjD6cFdCid49A=='
+CUSTOMER_ID = '2671614'
 
 header = {'User-agent' : 'Mozila/2.0'}
 
@@ -130,7 +130,7 @@ result_dic = {
 
 #엑셀 생성
 df = pd.DataFrame(result_dic, columns=['키워드','월간검색수','월간검색수(모바일)','합계','노출1','노출2','노출3','노출4','노출5','지식in1등(날짜/조회수)','지식in2등(날짜/조회수)','지식in3등(날짜/조회수)'])
-excel_writer = pd.ExcelWriter('',engine='xlsxwriter')
+excel_writer = pd.ExcelWriter('C:/Users/bcm15/OneDrive/바탕 화면/브랜딩/마케팅지도.xlsx',engine='xlsxwriter')
 df.to_excel(excel_writer, index=False, sheet_name='마케팅지도')
 excel_writer.close()
 
