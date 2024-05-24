@@ -154,6 +154,7 @@ for i in range(0,len(keyword_li)):
         else:
             know_count = 0
             select_info_li.append(select_info)
+            select_info = ''
             break
 
     print(select_info_li)
