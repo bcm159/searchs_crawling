@@ -55,6 +55,9 @@ month_sum_num = 0
 
 keyword_li = words.split(',')
 
+select_info_li = []
+select_info = ''
+
 for i in range(0,len(keyword_li)):
     keyword = keyword_li[i]
     #한글로 인한 오류 방지
@@ -104,7 +107,7 @@ for i in range(0,len(keyword_li)):
     html = response.text
 
     soup = BeautifulSoup(html, 'html.parser')
-    info_sub_li = soup.select('a.question_text')
+    info_sub_li = soup.select('div.question_group > a.question_text')
 
     for info_sub in info_sub_li:
 
@@ -112,33 +115,48 @@ for i in range(0,len(keyword_li)):
         know_html = res.text
         know_soup = BeautifulSoup(know_html, 'html.parser')
 
-        know_info = know_soup.select('span.c-userinfo__info')
+        select_know = know_soup.select_one('div.additionalInfo')
+
+
+        know_info = know_soup.select('span.infoItem')
+
         if know_count == 0:
             if know_info:
+                if select_know: select_info = select_info + '1'
+                else:   select_info = select_info + '0'
                 know_li1.append(know_info[0].text + ' ' + know_info[1].text)
                 know_count = know_count + 1
-                #print(f'month_pc_li길이 : {len(month_pc_li)}일때{len(know_li1)}')
+                # print(f'month_pc_li길이 : {len(month_pc_li)}일때{len(know_li1)}')
             else:
+                select_info = select_info + '0'
                 know_li1.append('지식인 없음')
                 know_count = know_count + 1
         elif know_count == 1:
             if know_info:
+                if select_know: select_info = select_info + '1'
+                else:   select_info = select_info + '0'
                 know_li2.append(know_info[0].text + ' ' + know_info[1].text)
                 know_count = know_count + 1
             else:
+                select_info = select_info + '0'
                 know_li2.append('지식인 없음')
                 know_count = know_count + 1
         elif know_count == 2:
             if know_info:
+                if select_know: select_info = select_info + '1'
+                else:   select_info = select_info + '0'
                 know_li3.append(know_info[0].text + ' ' + know_info[1].text)
                 know_count = know_count + 1
             else:
+                select_info = select_info + '0'
                 know_li3.append('지식인 없음')
                 know_count = know_count + 1
         else:
             know_count = 0
+            select_info_li.append(select_info)
             break
 
+    print(select_info_li)
     if len(month_pc_li) != len(know_li1):
 
         rmv_keyword.append(keyword)
@@ -170,13 +188,14 @@ result_dic = {
     '노출5' : titles_li5,
     '지식in1등(날짜/조회수)' : know_li1,
     '지식in2등(날짜/조회수)' : know_li2,
-    '지식in3등(날짜/조회수)' : know_li3
+    '지식in3등(날짜/조회수)' : know_li3,
+    '지식in 채택' : select_info_li
 }
 for key, value in result_dic.items():
     print(f"{key}: Length is {len(value)}")
 #엑셀 생성
-df = pd.DataFrame(result_dic, columns=['키워드','월간검색수','월간검색수(모바일)','합계','노출1','노출2','노출3','노출4','노출5','지식in1등(날짜/조회수)','지식in2등(날짜/조회수)','지식in3등(날짜/조회수)'])
-excel_writer = pd.ExcelWriter('C:/Users/bcm15/OneDrive/바탕 화면/브랜딩/마케팅지도.xlsx',engine='xlsxwriter')
+df = pd.DataFrame(result_dic, columns=['키워드','월간검색수','월간검색수(모바일)','합계','노출1','노출2','노출3','노출4','노출5','지식in1등(날짜/조회수)','지식in2등(날짜/조회수)','지식in3등(날짜/조회수)','지식in 채택'])
+excel_writer = pd.ExcelWriter('C:/Users/bcm15/PycharmProjects/searchs_crawling/마케팅지도.xlsx',engine='xlsxwriter')
 df.to_excel(excel_writer, index=False, sheet_name='마케팅지도')
 excel_writer.close()
 
